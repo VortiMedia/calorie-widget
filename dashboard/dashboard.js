@@ -267,7 +267,7 @@ function updateEmbedCode() {
 // Generate standard embed code
 function generateStandardEmbedCode(settings) {
     let code = `<div id="calorie-calculator"></div>\n`;
-    code += `<script src="https://calorie-widget.vercel.app/calorie-widget.js"></script>\n`;
+    code += `<script src="${window.location.origin}/calorie-widget.js"></script>\n`;
     code += `<script>\n`;
     code += `  document.addEventListener('DOMContentLoaded', function() {\n`;
     code += `    if (typeof CalorieWidget !== 'undefined') {\n`;
@@ -349,7 +349,7 @@ function generateStandardEmbedCode(settings) {
 // Generate one-line embed code
 function generateOneLineEmbedCode(settings) {
     let code = `<script\n`;
-    code += `  src="https://calorie-widget.vercel.app/calorie-widget.js"\n`;
+    code += `  src="${window.location.origin}/calorie-widget.js"\n`;
     code += `  data-container="calorie-calculator"\n`;
     
     // Add data attributes for settings
@@ -394,7 +394,7 @@ function generateIframeEmbedCode(settings) {
     
     // Generate iframe code
     let code = `<iframe\n`;
-    code += `  src="https://calorie-widget.vercel.app?${queryParams.toString()}"\n`;
+    code += `  src="${window.location.origin}/demo?${queryParams.toString()}"\n`;
     code += `  width="${settings.maxWidth}"\n`;
     code += `  height="600"\n`;
     code += `  style="border: none; width: 100%; max-width: ${settings.maxWidth}px;"\n`;
@@ -419,7 +419,7 @@ function updatePreview() {
     }
     
     // Update iframe src
-    previewFrame.src = `../dist/index.html?${queryParams.toString()}`;
+    previewFrame.src = `/demo?${queryParams.toString()}`;
 }
 
 // Get all settings from form
