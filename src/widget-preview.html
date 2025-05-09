@@ -46,21 +46,21 @@
             if (typeof CalorieWidget !== 'undefined') {
                 const config = {
                     // Colors
-                    primaryColor: params.primaryColor || '#4361EE',
-                    secondaryColor: params.secondaryColor || '#3A0CA3',
+                    primaryColor: decodeURIComponent(params.primaryColor || '#4361EE'),
+                    secondaryColor: decodeURIComponent(params.secondaryColor || '#3A0CA3'),
                     
                     // Branding
-                    title: params.title || 'Calorie Calculator',
-                    subtitle: params.subtitle || 'Calculate your daily calorie needs',
-                    footerText: params.footerText || 'Results based on Mifflin-St Jeor Equation',
-                    maxWidth: params.maxWidth + 'px' || '600px',
+                    title: decodeURIComponent(params.title || 'Calorie Calculator'),
+                    subtitle: decodeURIComponent(params.subtitle || 'Calculate your daily calorie needs'),
+                    footerText: decodeURIComponent(params.footerText || 'Results based on Mifflin-St Jeor Equation'),
+                    maxWidth: (params.maxWidth ? decodeURIComponent(params.maxWidth) : '600') + 'px',
                     
                     // Lead capture
                     requireLeadCapture: params.requireLeadCapture === 'true',
-                    leadFormTitle: params.leadFormTitle || 'Get Your Custom Fitness Plan!',
-                    leadFormDescription: params.leadFormDescription || 'Enter your details to receive your personalized nutrition and workout plan.',
-                    leadFormButton: params.leadFormButton || 'Unlock My Results',
-                    leadFormPrivacy: params.leadFormPrivacy || 'We respect your privacy and will never share your information.',
+                    leadFormTitle: params.leadFormTitle ? decodeURIComponent(params.leadFormTitle) : 'Get Your Custom Fitness Plan!',
+                    leadFormDescription: params.leadFormDescription ? decodeURIComponent(params.leadFormDescription) : 'Enter your details to receive your personalized nutrition and workout plan.',
+                    leadFormButton: params.leadFormButton ? decodeURIComponent(params.leadFormButton) : 'Unlock My Results',
+                    leadFormPrivacy: params.leadFormPrivacy ? decodeURIComponent(params.leadFormPrivacy) : 'We respect your privacy and will never share your information.',
                     
                     // Calculation settings
                     imperialUnits: params.imperialUnits === 'true',
@@ -69,11 +69,23 @@
                 
                 // Add logo if provided
                 if (params.logo) {
-                    config.logoUrl = params.logo;
+                    config.logoUrl = decodeURIComponent(params.logo);
+                }
+                
+                // Add goals to display
+                const goalsToDisplay = [];
+                if (params.goalMaintenance === 'true') goalsToDisplay.push('maintenance');
+                if (params.goalWeightLoss === 'true') goalsToDisplay.push('weight-loss');
+                if (params.goalWeightGain === 'true') goalsToDisplay.push('weight-gain');
+                
+                if (goalsToDisplay.length > 0) {
+                    config.goalsToDisplay = goalsToDisplay;
                 }
                 
                 // Initialize widget with parsed config
                 CalorieWidget.init('calorie-calculator-container', config);
+                
+                console.log('Widget preview initialized with config:', config);
             }
         });
     </script>

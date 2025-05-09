@@ -559,12 +559,23 @@ function updatePreview() {
     // Add preview timestamp to prevent caching
     queryParams.append('_t', Date.now());
     
-    // Update iframe src
-    previewFrame.src = `${baseUrl}/widget-preview?${queryParams.toString()}`;
-    
-    // Update the preview container width
+    // Recreate the iframe to avoid caching issues
     const previewFrameContainer = document.getElementById('preview-frame-container');
     if (previewFrameContainer) {
+        // Remove old iframe
+        while (previewFrameContainer.firstChild) {
+            previewFrameContainer.removeChild(previewFrameContainer.firstChild);
+        }
+        
+        // Create new iframe
+        const newFrame = document.createElement('iframe');
+        newFrame.id = 'preview-frame';
+        newFrame.width = '100%';
+        newFrame.height = '620';
+        newFrame.src = `${baseUrl}/widget-preview?${queryParams.toString()}&_t=${Date.now()}`;
+        previewFrameContainer.appendChild(newFrame);
+        
+        // Update the preview container width
         previewFrameContainer.style.width = `${settings.maxWidth}px`;
     }
 }
