@@ -1,0 +1,139 @@
+# Calorie Calculator Widget Specification
+
+## Problem Statement
+Users need a simple, embeddable widget that can calculate their daily calorie needs for weight loss or weight gain based on their personal metrics (height, weight, age, gender, activity level).
+
+## Solution Overview
+Create an embeddable widget that:
+1. Takes user inputs for height, weight, age, gender, and activity level
+2. Calculates Base Metabolic Rate (BMR) using the Mifflin-St Jeor equation
+3. Applies activity multipliers to determine Total Daily Energy Expenditure (TDEE)
+4. Provides calorie targets for weight loss and weight gain scenarios
+5. Allows easy embedding on any website
+
+## Technical Specifications
+
+### Core Functionality
+- Calculate BMR using the Mifflin-St Jeor Equation:
+  - For men: BMR = (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) + 5
+  - For women: BMR = (10 × weight in kg) + (6.25 × height in cm) - (5 × age in years) - 161
+
+- Apply activity multipliers to BMR to get TDEE:
+  - Sedentary (little or no exercise): BMR × 1.2
+  - Lightly active (light exercise/sports 1-3 days/week): BMR × 1.375
+  - Moderately active (moderate exercise/sports 3-5 days/week): BMR × 1.55
+  - Very active (hard exercise/sports 6-7 days/week): BMR × 1.725
+  - Extra active (very hard exercise, physical job or training twice a day): BMR × 1.9
+
+- Calculate calorie targets:
+  - Weight loss (moderate): TDEE - 500 calories
+  - Weight loss (aggressive): TDEE - 1000 calories
+  - Weight maintenance: TDEE
+  - Weight gain (moderate): TDEE + 500 calories
+  - Weight gain (aggressive): TDEE + 1000 calories
+
+### User Interface
+- Clean, responsive design
+- Input fields for:
+  - Height (switchable between cm and inches)
+  - Weight (switchable between kg and lbs)
+  - Age (in years)
+  - Gender (male/female)
+  - Activity level (dropdown)
+- Results section showing:
+  - BMR
+  - TDEE
+  - Weight loss calorie targets
+  - Weight maintenance calorie target
+  - Weight gain calorie targets
+- Recalculate button
+- Option to save/print results
+
+### Technical Implementation
+- Vanilla JavaScript for core functionality
+- CSS for styling
+- HTML for structure
+- No external dependencies required
+- Embeddable via iframe or script tag
+
+## File Structure
+```
+.
+├── .claude/                      # Configuration directory for Claude Code
+│   ├── config.json               # Configuration settings
+│   ├── html-template.html        # HTML template for embedding
+│   └── development-notes.md      # Notes for development
+├── src/                          # Source code
+│   ├── index.html                # Main HTML file
+│   ├── css/                      # CSS directory
+│   │   └── styles.css            # Styles for the widget
+│   └── js/                       # JavaScript directory
+│       ├── calculator.js         # Core calculation logic
+│       ├── ui.js                 # UI interaction logic
+│       └── embed.js              # Embedding functionality
+└── specs/                        # Specifications directory
+    └── calorie-calculator-widget-specification.md  # This specification file
+```
+
+## Development Steps
+
+1. **Set up project structure**
+   - Create directories and files according to the file structure
+
+2. **Implement the HTML structure**
+   - Create the form for user inputs
+   - Create the results display section
+   - Make it responsive and accessible
+
+3. **Implement core calculation logic**
+   - Create functions to calculate BMR
+   - Create functions to apply activity multipliers
+   - Create functions to calculate calorie targets
+
+4. **Implement UI interaction**
+   - Handle form submissions
+   - Update results dynamically
+   - Implement unit switching (kg/lbs, cm/inches)
+   - Add form validation
+
+5. **Style the widget**
+   - Create a clean, professional design
+   - Ensure mobile responsiveness
+   - Add appropriate animations/transitions
+
+6. **Create embedding functionality**
+   - Create script for easy embedding
+   - Implement iframe option
+   - Document embedding process
+
+7. **Testing**
+   - Test calculations against known values
+   - Test UI across different browsers
+   - Test responsive design on different devices
+   - Validate form handling and error states
+
+8. **Documentation**
+   - Document how to embed the widget
+   - Document calculation methodology
+   - Create README with setup instructions
+
+## Self-Validation
+
+Before considering this feature complete:
+- Verify all calculations match expected outputs
+- Ensure the widget is fully responsive
+- Confirm the widget can be embedded on various sites
+- Validate all user inputs properly
+- Ensure a clean, professional appearance
+
+## Deployment
+- Host compiled widget on CDN
+- Create landing page for the widget with installation instructions
+- Set up analytics to track widget usage
+
+## Future Enhancements
+- Add more calculation methods (Harris-Benedict, Katch-McArdle)
+- Include macro breakdowns (protein, carbs, fat)
+- Add meal planning suggestions
+- Create user accounts to save progress
+- Implement dark/light mode toggle

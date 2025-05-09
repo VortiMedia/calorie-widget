@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Calculator Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f7f9fc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .showcase {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 800;
+            color: #1E293B;
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+        .page-subtitle {
+            text-align: center;
+            margin-top: -2rem;
+            margin-bottom: 3rem;
+            color: #64748B;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .showcase-section {
+            margin-bottom: 4rem;
+            border-radius: 24px;
+            background-color: white;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            display: inline-block;
+            background: #F1F5F9;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #475569;
+            margin-bottom: 2rem;
+        }
+        .embed-code {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            position: relative;
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.9rem;
+            color: #334155;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .embed-code::before {
+            content: "Embed Code";
+            position: absolute;
+            top: -12px;
+            left: 16px;
+            background: white;
+            padding: 0 8px;
+            font-size: 0.8rem;
+            color: #64748B;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #475569;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .copy-btn:hover {
+            background: #F1F5F9;
+        }
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        @media (max-width: 1024px) {
+            .themes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748B;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="showcase">
+        <h1 class="page-title">Calorie Calculator Widget</h1>
+        <p class="page-subtitle">A modern, customizable calorie calculator widget that can be embedded on any website, including Framer sites.</p>
+        
+        <section class="showcase-section">
+            <div class="section-title">Default Theme (with Lead Capture)</div>
+            <div id="calorie-calculator-container"></div>
+            <div class="embed-code">
+<button class="copy-btn">Copy</button>&lt;div id="calorie-calculator"&gt;&lt;/div&gt;
+&lt;script src="https://your-domain.com/calorie-widget.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof CalorieWidget !== 'undefined') {
+      CalorieWidget.init('calorie-calculator', {
+        requireLeadCapture: true,
+        onLeadCapture: function(data) {
+          console.log('Lead captured:', data);
+        }
+      });
+    }
+  });
+&lt;/script&gt;</div>
+        </section>
+        
+        <section class="showcase-section">
+            <div class="section-title">Default Theme (without Lead Capture)</div>
+            <div id="no-lead-capture"></div>
+            <div class="embed-code">
+<button class="copy-btn">Copy</button>&lt;div id="calorie-calculator"&gt;&lt;/div&gt;
+&lt;script src="https://your-domain.com/calorie-widget.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof CalorieWidget !== 'undefined') {
+      CalorieWidget.init('calorie-calculator', {
+        requireLeadCapture: false
+      });
+    }
+  });
+&lt;/script&gt;</div>
+        </section>
+        
+        <section class="showcase-section">
+            <div class="section-title">Custom Themes</div>
+            <div class="themes-grid">
+                <!-- Custom blue theme -->
+                <div>
+                    <div id="blue-theme"></div>
+                    <div class="embed-code">
+<button class="copy-btn">Copy</button>&lt;script 
+  src="https://your-domain.com/calorie-widget.js" 
+  data-container="calorie-calculator"
+  data-primary-color="#3B82F6"
+  data-secondary-color="#1D4ED8"
+  data-title="Fitness Calorie Calculator"
+&gt;&lt;/script&gt;</div>
+                </div>
+                
+                <!-- Custom green theme -->
+                <div>
+                    <div id="green-theme"></div>
+                    <div class="embed-code">
+<button class="copy-btn">Copy</button>&lt;script 
+  src="https://your-domain.com/calorie-widget.js" 
+  data-container="calorie-calculator"
+  data-primary-color="#10B981"
+  data-secondary-color="#059669"
+  data-title="Eco Calorie Calculator"
+&gt;&lt;/script&gt;</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="showcase-section">
+            <div class="section-title">Premium Themes</div>
+            <div class="themes-grid">
+                <!-- Premium dark theme -->
+                <div>
+                    <div id="dark-theme"></div>
+                    <div class="embed-code">
+<button class="copy-btn">Copy</button>&lt;script&gt;
+  document.addEventListener('DOMContentLoaded', function() {
+    CalorieWidget.init('calorie-calculator', {
+      primaryColor: '#6366F1',
+      secondaryColor: '#4F46E5',
+      title: 'Premium Calorie Calculator',
+      subtitle: 'Get accurate nutrition insights',
+      footerText: 'Powered by science-based algorithms',
+      maxWidth: '600px'
+    });
+  });
+&lt;/script&gt;</div>
+                </div>
+                
+                <!-- Premium gradient theme -->
+                <div>
+                    <div id="gradient-theme"></div>
+                    <div class="embed-code">
+<button class="copy-btn">Copy</button>&lt;script&gt;
+  document.addEventListener('DOMContentLoaded', function() {
+    CalorieWidget.init('calorie-calculator', {
+      primaryColor: '#EC4899',
+      secondaryColor: '#8B5CF6',
+      title: 'Lifestyle Calculator',
+      subtitle: 'Plan your nutrition journey',
+      footerText: 'Results based on latest research',
+      maxWidth: '600px'
+    });
+  });
+&lt;/script&gt;</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        © 2025 Calorie Calculator Widget · <a href="#">Documentation</a> · <a href="#">GitHub</a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for the widget script to load
+            if (typeof CalorieWidget !== 'undefined') {
+                initializeDemos();
+            } else {
+                // If script loads asynchronously
+                window.onCalorieWidgetLoaded = initializeDemos;
+            }
+            
+            function initializeDemos() {
+                // Initialize the main widget with lead capture
+                CalorieWidget.init('calorie-calculator-container', {
+                    primaryColor: '#4361EE',
+                    secondaryColor: '#3A0CA3',
+                    title: 'Calorie Calculator',
+                    subtitle: 'Calculate your daily calorie needs',
+                    footerText: 'Results based on Mifflin-St Jeor Equation',
+                    requireLeadCapture: true,
+                    onLeadCapture: function(data) {
+                        console.log('Lead captured:', data);
+                    }
+                });
+                
+                // Initialize the widget without lead capture
+                CalorieWidget.init('no-lead-capture', {
+                    primaryColor: '#4361EE',
+                    secondaryColor: '#3A0CA3',
+                    title: 'Calorie Calculator',
+                    subtitle: 'Calculate your daily calorie needs',
+                    footerText: 'Results based on Mifflin-St Jeor Equation',
+                    requireLeadCapture: false
+                });
+                
+                // Initialize demo widgets with custom themes
+                CalorieWidget.init('blue-theme', {
+                    primaryColor: '#3B82F6',
+                    secondaryColor: '#1D4ED8',
+                    title: 'Fitness Calorie Calculator',
+                    subtitle: 'Optimize your workout nutrition',
+                    footerText: 'Accurate fitness-focused calculations',
+                    requireLeadCapture: true
+                });
+                
+                CalorieWidget.init('green-theme', {
+                    primaryColor: '#10B981',
+                    secondaryColor: '#059669',
+                    title: 'Eco Calorie Calculator',
+                    subtitle: 'Sustainable nutrition planning',
+                    footerText: 'Powered by green technology',
+                    requireLeadCapture: true
+                });
+                
+                CalorieWidget.init('dark-theme', {
+                    primaryColor: '#6366F1',
+                    secondaryColor: '#4F46E5',
+                    title: 'Premium Calorie Calculator',
+                    subtitle: 'Get accurate nutrition insights',
+                    footerText: 'Powered by science-based algorithms',
+                    requireLeadCapture: true
+                });
+                
+                CalorieWidget.init('gradient-theme', {
+                    primaryColor: '#EC4899',
+                    secondaryColor: '#8B5CF6',
+                    title: 'Lifestyle Calculator',
+                    subtitle: 'Plan your nutrition journey',
+                    footerText: 'Results based on latest research',
+                    requireLeadCapture: true
+                });
+                
+                // Add copy functionality to copy buttons
+                document.querySelectorAll('.copy-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const code = this.parentElement.textContent.replace('Copy', '');
+                        navigator.clipboard.writeText(code).then(() => {
+                            this.textContent = 'Copied!';
+                            setTimeout(() => {
+                                this.textContent = 'Copy';
+                            }, 2000);
+                        });
+                    });
+                });
+                
+                // Add a lead display section to show captured leads
+                setTimeout(() => {
+                    const leads = JSON.parse(localStorage.getItem('calorieWidgetLeads') || '[]');
+                    if (leads.length > 0) {
+                        const leadsSection = document.createElement('section');
+                        leadsSection.className = 'showcase-section';
+                        leadsSection.innerHTML = `
+                            <div class="section-title">Captured Leads</div>
+                            <div style="background: #F9FAFB; border-radius: 12px; padding: 1rem; margin-top: 1rem;">
+                                <h3 style="margin-bottom: 1rem; font-size: 1rem; color: #4B5563;">
+                                    ${leads.length} lead${leads.length > 1 ? 's' : ''} captured in localStorage:
+                                </h3>
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    ${leads.map(lead => `
+                                        <li style="padding: 0.75rem; background: white; margin-bottom: 0.5rem; border-radius: 8px; border: 1px solid #E5E7EB;">
+                                            <strong>${lead.name}</strong> - ${lead.email}
+                                            <span style="float: right; color: #9CA3AF; font-size: 0.8rem;">
+                                                ${new Date(lead.timestamp).toLocaleString()}
+                                            </span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        `;
+                        document.querySelector('.showcase').appendChild(leadsSection);
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
