@@ -590,6 +590,8 @@ input:checked + .toggle-slider:before {
     text-align: center;
     background-color: #F1F5F9;
     border-top: 1px solid var(--border-color);
+    position: relative;
+    z-index: 10;
 }
 
 .refresh-btn {
@@ -597,6 +599,8 @@ input:checked + .toggle-slider:before {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Leads Table */

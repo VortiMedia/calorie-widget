@@ -16,12 +16,23 @@ document.addEventListener('DOMContentLoaded', function() {
     loadLeads();
     updateEmbedCode();
     
-    // Update embed code when settings change
+    // Update embed code and preview when settings change
     document.querySelectorAll('input, select, textarea').forEach(input => {
-        input.addEventListener('change', updateEmbedCode);
+        // Update on change events (checkbox, radio, select)
+        input.addEventListener('change', function() {
+            updateEmbedCode();
+            // Add small delay before refreshing preview
+            setTimeout(updatePreview, 100);
+        });
         
+        // Additionally update on input events for text fields
         if (input.type === 'text' || input.type === 'number' || input.tagName === 'TEXTAREA') {
-            input.addEventListener('input', updateEmbedCode);
+            input.addEventListener('input', function() {
+                updateEmbedCode();
+                // Debounce the preview update to avoid too many refreshes
+                clearTimeout(input.debounceTimer);
+                input.debounceTimer = setTimeout(updatePreview, 500);
+            });
         }
     });
 });
@@ -192,8 +203,35 @@ function initializeWidthControl() {
         const width = parseInt(this.value);
         if (width >= 300 && width <= 1200) {
             previewFrameContainer.style.width = `${width}px`;
+            updatePreview(); // Refresh preview when width changes
         }
     });
+    
+    // Add refresh preview button
+    const refreshButton = document.createElement('button');
+    refreshButton.id = 'refresh-preview';
+    refreshButton.className = 'btn btn-outline refresh-btn';
+    refreshButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
+            <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"></path>
+        </svg>
+        Refresh Preview
+    `;
+    refreshButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        updatePreview();
+    });
+    
+    // Insert refresh button after the preview
+    const previewContainer = document.querySelector('.preview-container');
+    if (previewContainer) {
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'refresh-button-container';
+        buttonContainer.appendChild(refreshButton);
+        previewContainer.appendChild(buttonContainer);
+    }
 }
 
 // Initialize clipboard.js
@@ -433,45 +471,35 @@ function generateIframeEmbedCode(settings) {
     // The base URL for your widget files
     const baseUrl = getBaseUrl();
     
-    const queryParams = new URLSearchParams();
+    // Create simplified query parameters for Framer compatibility
+    const essentialParams = new URLSearchParams();
     
-    // Add settings as query parameters
-    queryParams.append('primaryColor', encodeURIComponent(settings.primaryColor));
-    queryParams.append('secondaryColor', encodeURIComponent(settings.secondaryColor));
-    queryParams.append('title', encodeURIComponent(settings.title));
-    queryParams.append('subtitle', encodeURIComponent(settings.subtitle));
-    queryParams.append('footerText', encodeURIComponent(settings.footerText));
-    queryParams.append('maxWidth', settings.maxWidth);
-    queryParams.append('requireLeadCapture', settings.requireLeadCapture);
-    queryParams.append('imperialUnits', settings.imperialUnits);
-    queryParams.append('calculationFormula', settings.calculationFormula);
+    // Add only the most essential settings to keep the URL short
+    essentialParams.append('p', encodeURIComponent(settings.primaryColor.replace('#', ''))); // primaryColor
+    essentialParams.append('s', encodeURIComponent(settings.secondaryColor.replace('#', ''))); // secondaryColor
+    essentialParams.append('t', encodeURIComponent(settings.title)); // title
+    essentialParams.append('w', settings.maxWidth); // width
+    essentialParams.append('l', settings.requireLeadCapture ? '1' : '0'); // lead capture
     
-    // Add goals to display
-    queryParams.append('goalMaintenance', settings.goalMaintenance);
-    queryParams.append('goalWeightLoss', settings.goalWeightLoss);
-    queryParams.append('goalWeightGain', settings.goalWeightGain);
-    
-    if (settings.requireLeadCapture) {
-        queryParams.append('leadFormTitle', encodeURIComponent(settings.leadFormTitle));
-        queryParams.append('leadFormDescription', encodeURIComponent(settings.leadFormDescription));
-        queryParams.append('leadFormButton', encodeURIComponent(settings.leadFormButton));
-        queryParams.append('leadFormPrivacy', encodeURIComponent(settings.leadFormPrivacy));
-    }
-    
+    // Add logo only if provided (compressed parameter)
     if (settings.logo) {
-        queryParams.append('logo', encodeURIComponent(settings.logo));
+        // For data URLs, just use a flag that logo is enabled
+        if (settings.logo.startsWith('data:')) {
+            essentialParams.append('logo', '1');
+        } else {
+            essentialParams.append('logo', encodeURIComponent(settings.logo));
+        }
     }
     
     // Generate iframe code
     let code = `<!-- Calorie Calculator Widget - iframe Embed -->\n`;
     code += `<iframe\n`;
-    code += `  src="${baseUrl}/widget-preview?${queryParams.toString()}"\n`;
+    code += `  src="${baseUrl}/widget-preview?${essentialParams.toString()}"\n`;
     code += `  width="${settings.maxWidth}"\n`;
     code += `  height="620"\n`;
     code += `  style="border: none; width: 100%; max-width: ${settings.maxWidth}px;"\n`;
     code += `  title="${escapeHtmlAttr(settings.title)}"\n`;
     code += `  loading="lazy"\n`;
-    code += `  allow="clipboard-write"\n`;
     code += `></iframe>`;
     
     return code;

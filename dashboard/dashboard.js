@@ -120,7 +120,11 @@ function initializeLogoUpload() {
     const logoUpload = document.getElementById('logo-upload');
     const logoPreview = document.getElementById('logo-preview');
     const removeLogoBtn = document.getElementById('remove-logo');
-    let logoData = null;
+    
+    // Initialize global logo data if not present
+    if (typeof window.logoData === 'undefined') {
+        window.logoData = null;
+    }
     
     logoPreview.addEventListener('click', function() {
         logoUpload.click();
@@ -131,10 +135,51 @@ function initializeLogoUpload() {
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                logoData = e.target.result;
-                logoPreview.innerHTML = `<img src="${logoData}" alt="Logo preview">`;
+                const tempLogoData = e.target.result;
+                logoPreview.innerHTML = `<img src="${tempLogoData}" alt="Logo preview">`;
                 removeLogoBtn.style.display = 'block';
-                updateEmbedCode();
+                
+                // Create a smaller version of the logo for embedding
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDimension = 300; // Max width or height
+                    
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // Scale down if needed
+                    if (width > maxDimension || height > maxDimension) {
+                        if (width > height) {
+                            height = (height / width) * maxDimension;
+                            width = maxDimension;
+                        } else {
+                            width = (width / height) * maxDimension;
+                            height = maxDimension;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Update the data URL with the resized image
+                    window.logoData = canvas.toDataURL(file.type, 0.8); // 80% quality
+                    
+                    // Make sure the preview shows the resized image
+                    logoPreview.innerHTML = `<img src="${window.logoData}" alt="Logo preview">`;
+                    
+                    // Ensure the image has loaded before updating the UI
+                    setTimeout(function() {
+                        // Update the preview and embed code
+                        updateEmbedCode();
+                        // Force refresh of the preview with the new logo
+                        updatePreview();
+                    }, 100);
+                };
+                img.src = tempLogoData;
             };
             reader.readAsDataURL(file);
         }
@@ -142,14 +187,17 @@ function initializeLogoUpload() {
     
     removeLogoBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        logoData = null;
+        window.logoData = null;
         logoPreview.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <span>Upload Logo</span>
         `;
         logoUpload.value = '';
         this.style.display = 'none';
+        
+        // Update the UI
         updateEmbedCode();
+        updatePreview();
     });
 }
 
@@ -590,6 +638,9 @@ function updatePreview() {
     // Recreate the iframe to avoid caching issues
     const previewFrameContainer = document.getElementById('preview-frame-container');
     if (previewFrameContainer) {
+        const previewContainer = document.querySelector('.preview-container');
+        let buttonContainer = document.querySelector('.refresh-button-container');
+        
         // Remove old iframe
         while (previewFrameContainer.firstChild) {
             previewFrameContainer.removeChild(previewFrameContainer.firstChild);
@@ -605,11 +656,50 @@ function updatePreview() {
         
         // Update the preview container width
         previewFrameContainer.style.width = `${settings.maxWidth}px`;
+        
+        // Create or update refresh button if needed
+        if (!buttonContainer && previewContainer) {
+            // Create refresh button
+            const refreshButton = document.createElement('button');
+            refreshButton.id = 'refresh-preview';
+            refreshButton.className = 'btn btn-outline refresh-btn';
+            refreshButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
+                    <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"></path>
+                </svg>
+                Refresh Preview
+            `;
+            refreshButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                updatePreview();
+            });
+            
+            // Create container
+            buttonContainer = document.createElement('div');
+            buttonContainer.className = 'refresh-button-container';
+            buttonContainer.appendChild(refreshButton);
+            
+            // Add to DOM
+            previewContainer.appendChild(buttonContainer);
+        }
     }
 }
 
 // Get all settings from form
 function getSettings() {
+    // Define a window-level variable to store the logo data
+    if (!window.logoData) {
+        window.logoData = null;
+    }
+    
+    // Check if there's a logo in the preview
+    const logoImg = document.querySelector('#logo-preview img');
+    if (logoImg && logoImg.src) {
+        window.logoData = logoImg.src;
+    }
+    
     return {
         // Colors
         primaryColor: document.getElementById('primary-color').value,
@@ -619,7 +709,7 @@ function getSettings() {
         title: document.getElementById('widget-title').value,
         subtitle: document.getElementById('widget-subtitle').value,
         footerText: document.getElementById('widget-footer').value,
-        logo: document.querySelector('#logo-preview img') ? document.querySelector('#logo-preview img').src : null,
+        logo: window.logoData,
         maxWidth: document.getElementById('widget-width').value,
         
         // Lead capture
@@ -674,6 +764,7 @@ function loadSettings() {
     }
     
     if (settings.logo) {
+        window.logoData = settings.logo;
         document.getElementById('logo-preview').innerHTML = `<img src="${settings.logo}" alt="Logo preview">`;
         document.getElementById('remove-logo').style.display = 'block';
     }

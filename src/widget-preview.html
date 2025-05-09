@@ -71,10 +71,18 @@
                 // Add logo if provided
                 if (params.logo) {
                     try {
-                        config.logoUrl = decodeURIComponent(params.logo);
-                        console.log("Logo URL loaded:", config.logoUrl);
+                        // Handle both the full data URL and the shortened flag
+                        if (params.logo === "1") {
+                            // The dashboard has a logo, but we're using the shortened URL
+                            // We'll create a placeholder logo
+                            config.logoUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjYwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiNmMWYxZjEiIHJ4PSI4Ii8+PHRleHQgeD0iMTAwIiB5PSIzNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNDM2MUVFIj5Zb3VyIExvZ288L3RleHQ+PC9zdmc+";
+                            console.log("Using placeholder logo");
+                        } else {
+                            config.logoUrl = decodeURIComponent(params.logo);
+                            console.log("Logo URL loaded");
+                        }
                     } catch (e) {
-                        console.error("Error decoding logo URL:", e);
+                        console.error("Error processing logo URL:", e);
                         config.logoUrl = params.logo;
                     }
                 }
