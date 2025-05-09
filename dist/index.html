@@ -101,7 +101,66 @@
             color: #64748B;
             font-size: 0.9rem;
         }</style><script defer="defer" src="/calorie-widget.js"></script></head><body><div class="showcase"><h1 class="page-title">Calorie Calculator Widget</h1><p class="page-subtitle">A modern, customizable calorie calculator widget that can be embedded on any website, including Framer sites.</p><section class="showcase-section"><div class="section-title">Default Theme (with Lead Capture)</div><div id="calorie-calculator-container"></div><div class="embed-code"><button class="copy-btn">Copy</button>&lt;div id="calorie-calculator"&gt;&lt;/div&gt; &lt;script src="https://your-domain.com/calorie-widget.js"&gt;&lt;/script&gt; &lt;script&gt; document.addEventListener('DOMContentLoaded', function() { if (typeof CalorieWidget !== 'undefined') { CalorieWidget.init('calorie-calculator', { requireLeadCapture: true, onLeadCapture: function(data) { console.log('Lead captured:', data); } }); } }); &lt;/script&gt;</div></section><section class="showcase-section"><div class="section-title">Default Theme (without Lead Capture)</div><div id="no-lead-capture"></div><div class="embed-code"><button class="copy-btn">Copy</button>&lt;div id="calorie-calculator"&gt;&lt;/div&gt; &lt;script src="https://your-domain.com/calorie-widget.js"&gt;&lt;/script&gt; &lt;script&gt; document.addEventListener('DOMContentLoaded', function() { if (typeof CalorieWidget !== 'undefined') { CalorieWidget.init('calorie-calculator', { requireLeadCapture: false }); } }); &lt;/script&gt;</div></section><section class="showcase-section"><div class="section-title">Custom Themes</div><div class="themes-grid"><div><div id="blue-theme"></div><div class="embed-code"><button class="copy-btn">Copy</button>&lt;script src="https://your-domain.com/calorie-widget.js" data-container="calorie-calculator" data-primary-color="#3B82F6" data-secondary-color="#1D4ED8" data-title="Fitness Calorie Calculator" &gt;&lt;/script&gt;</div></div><div><div id="green-theme"></div><div class="embed-code"><button class="copy-btn">Copy</button>&lt;script src="https://your-domain.com/calorie-widget.js" data-container="calorie-calculator" data-primary-color="#10B981" data-secondary-color="#059669" data-title="Eco Calorie Calculator" &gt;&lt;/script&gt;</div></div></div></section><section class="showcase-section"><div class="section-title">Premium Themes</div><div class="themes-grid"><div><div id="dark-theme"></div><div class="embed-code"><button class="copy-btn">Copy</button>&lt;script&gt; document.addEventListener('DOMContentLoaded', function() { CalorieWidget.init('calorie-calculator', { primaryColor: '#6366F1', secondaryColor: '#4F46E5', title: 'Premium Calorie Calculator', subtitle: 'Get accurate nutrition insights', footerText: 'Powered by science-based algorithms', maxWidth: '600px' }); }); &lt;/script&gt;</div></div><div><div id="gradient-theme"></div><div class="embed-code"><button class="copy-btn">Copy</button>&lt;script&gt; document.addEventListener('DOMContentLoaded', function() { CalorieWidget.init('calorie-calculator', { primaryColor: '#EC4899', secondaryColor: '#8B5CF6', title: 'Lifestyle Calculator', subtitle: 'Plan your nutrition journey', footerText: 'Results based on latest research', maxWidth: '600px' }); }); &lt;/script&gt;</div></div></div></section></div><footer>© 2025 Calorie Calculator Widget · <a href="#">Documentation</a> · <a href="#">GitHub</a></footer><script>document.addEventListener('DOMContentLoaded', function() {
-            // Wait for the widget script to load
+            // Check for URL parameters (used by dashboard preview)
+            const urlParams = new URLSearchParams(window.location.search);
+            let previewMode = false;
+            let previewSettings = {};
+            
+            if (urlParams.has('primaryColor')) {
+                previewMode = true;
+                
+                // Extract all parameters for preview
+                previewSettings = {
+                    primaryColor: urlParams.get('primaryColor'),
+                    secondaryColor: urlParams.get('secondaryColor'),
+                    title: urlParams.get('title'),
+                    subtitle: urlParams.get('subtitle'),
+                    footerText: urlParams.get('footerText'),
+                    requireLeadCapture: urlParams.get('requireLeadCapture') === 'true',
+                    maxWidth: urlParams.get('maxWidth') || '600'
+                };
+                
+                // Optional parameters
+                if (urlParams.has('logoUrl')) {
+                    previewSettings.logoUrl = urlParams.get('logoUrl');
+                }
+                
+                if (urlParams.has('leadFormTitle')) {
+                    previewSettings.leadFormTitle = urlParams.get('leadFormTitle');
+                }
+                
+                if (urlParams.has('leadFormDescription')) {
+                    previewSettings.leadFormDescription = urlParams.get('leadFormDescription');
+                }
+                
+                if (urlParams.has('leadFormButton')) {
+                    previewSettings.leadFormButtonText = urlParams.get('leadFormButton');
+                }
+                
+                if (urlParams.has('leadFormPrivacy')) {
+                    previewSettings.leadFormPrivacyText = urlParams.get('leadFormPrivacy');
+                }
+                
+                // If in preview mode, only show one widget
+                document.body.innerHTML = '<div id="preview-widget"></div>';
+                document.body.style.background = '#F9FAFB';
+                document.body.style.margin = '0';
+                document.body.style.padding = '20px';
+                
+                // Wait for the widget script to load
+                if (typeof CalorieWidget !== 'undefined') {
+                    CalorieWidget.init('preview-widget', previewSettings);
+                } else {
+                    // If script loads asynchronously
+                    window.onCalorieWidgetLoaded = function() {
+                        CalorieWidget.init('preview-widget', previewSettings);
+                    };
+                }
+                
+                return;
+            }
+            
+            // Normal demo mode (not preview)
             if (typeof CalorieWidget !== 'undefined') {
                 initializeDemos();
             } else {

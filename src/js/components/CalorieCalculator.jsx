@@ -46,6 +46,14 @@ const Header = styled.div`
   }
 `;
 
+const Logo = styled.img`
+  max-height: 60px;
+  margin-bottom: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
 const Title = styled.h2`
   margin-bottom: 0.5rem;
   font-weight: 700;
@@ -173,6 +181,7 @@ const CalorieCalculator = (props) => {
   return (
     <Widget maxWidth={props.maxWidth} className="calorie-calculator-widget">
       <Header primaryColor={primaryColor} secondaryColor={secondaryColor}>
+        {props.logoUrl && <Logo src={props.logoUrl} alt="Logo" />}
         <Title>{props.title || 'Calorie Calculator'}</Title>
         <Subtitle>{props.subtitle || 'Calculate your daily calorie needs'}</Subtitle>
       </Header>

@@ -234,7 +234,66 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Wait for the widget script to load
+            // Check for URL parameters (used by dashboard preview)
+            const urlParams = new URLSearchParams(window.location.search);
+            let previewMode = false;
+            let previewSettings = {};
+            
+            if (urlParams.has('primaryColor')) {
+                previewMode = true;
+                
+                // Extract all parameters for preview
+                previewSettings = {
+                    primaryColor: urlParams.get('primaryColor'),
+                    secondaryColor: urlParams.get('secondaryColor'),
+                    title: urlParams.get('title'),
+                    subtitle: urlParams.get('subtitle'),
+                    footerText: urlParams.get('footerText'),
+                    requireLeadCapture: urlParams.get('requireLeadCapture') === 'true',
+                    maxWidth: urlParams.get('maxWidth') || '600'
+                };
+                
+                // Optional parameters
+                if (urlParams.has('logoUrl')) {
+                    previewSettings.logoUrl = urlParams.get('logoUrl');
+                }
+                
+                if (urlParams.has('leadFormTitle')) {
+                    previewSettings.leadFormTitle = urlParams.get('leadFormTitle');
+                }
+                
+                if (urlParams.has('leadFormDescription')) {
+                    previewSettings.leadFormDescription = urlParams.get('leadFormDescription');
+                }
+                
+                if (urlParams.has('leadFormButton')) {
+                    previewSettings.leadFormButtonText = urlParams.get('leadFormButton');
+                }
+                
+                if (urlParams.has('leadFormPrivacy')) {
+                    previewSettings.leadFormPrivacyText = urlParams.get('leadFormPrivacy');
+                }
+                
+                // If in preview mode, only show one widget
+                document.body.innerHTML = '<div id="preview-widget"></div>';
+                document.body.style.background = '#F9FAFB';
+                document.body.style.margin = '0';
+                document.body.style.padding = '20px';
+                
+                // Wait for the widget script to load
+                if (typeof CalorieWidget !== 'undefined') {
+                    CalorieWidget.init('preview-widget', previewSettings);
+                } else {
+                    // If script loads asynchronously
+                    window.onCalorieWidgetLoaded = function() {
+                        CalorieWidget.init('preview-widget', previewSettings);
+                    };
+                }
+                
+                return;
+            }
+            
+            // Normal demo mode (not preview)
             if (typeof CalorieWidget !== 'undefined') {
                 initializeDemos();
             } else {
