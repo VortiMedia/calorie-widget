@@ -44,19 +44,20 @@
             
             // Configure widget based on URL parameters
             if (typeof CalorieWidget !== 'undefined') {
+                // Support both full and shortened parameter names
                 const config = {
-                    // Colors
-                    primaryColor: decodeURIComponent(params.primaryColor || '#4361EE'),
-                    secondaryColor: decodeURIComponent(params.secondaryColor || '#3A0CA3'),
+                    // Colors (support both p/s short names and primaryColor/secondaryColor long names)
+                    primaryColor: decodeURIComponent(params.p ? '#' + params.p : params.primaryColor || '#4361EE'),
+                    secondaryColor: decodeURIComponent(params.s ? '#' + params.s : params.secondaryColor || '#3A0CA3'),
                     
                     // Branding
-                    title: decodeURIComponent(params.title || 'Calorie Calculator'),
+                    title: decodeURIComponent(params.t || params.title || 'Calorie Calculator'),
                     subtitle: decodeURIComponent(params.subtitle || 'Calculate your daily calorie needs'),
                     footerText: decodeURIComponent(params.footerText || 'Results based on Mifflin-St Jeor Equation'),
-                    maxWidth: (params.maxWidth ? decodeURIComponent(params.maxWidth) : '600') + 'px',
+                    maxWidth: (params.w || params.maxWidth || '600') + 'px',
                     
-                    // Lead capture
-                    requireLeadCapture: params.requireLeadCapture === 'true',
+                    // Lead capture (support both l short name and requireLeadCapture long name)
+                    requireLeadCapture: params.l === '1' || params.requireLeadCapture === 'true',
                     leadFormTitle: params.leadFormTitle ? decodeURIComponent(params.leadFormTitle) : 'Get Your Custom Fitness Plan!',
                     leadFormDescription: params.leadFormDescription ? decodeURIComponent(params.leadFormDescription) : 'Enter your details to receive your personalized nutrition and workout plan.',
                     leadFormButton: params.leadFormButton ? decodeURIComponent(params.leadFormButton) : 'Unlock My Results',
@@ -69,7 +70,13 @@
                 
                 // Add logo if provided
                 if (params.logo) {
-                    config.logoUrl = decodeURIComponent(params.logo);
+                    try {
+                        config.logoUrl = decodeURIComponent(params.logo);
+                        console.log("Logo URL loaded:", config.logoUrl);
+                    } catch (e) {
+                        console.error("Error decoding logo URL:", e);
+                        config.logoUrl = params.logo;
+                    }
                 }
                 
                 // Add goals to display

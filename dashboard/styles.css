@@ -585,6 +585,20 @@ input:checked + .toggle-slider:before {
     background: white;
 }
 
+.refresh-button-container {
+    padding: 0.75rem;
+    text-align: center;
+    background-color: #F1F5F9;
+    border-top: 1px solid var(--border-color);
+}
+
+.refresh-btn {
+    padding: 0.6rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 /* Leads Table */
 .leads-header {
     display: flex;
