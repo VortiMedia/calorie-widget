@@ -1,262 +1,137 @@
-# Calorie Calculator Widget: Embedding Guide
+# Calorie Calculator Widget Embedding Guide
 
-This guide explains how to embed the Calorie Calculator Widget on any website, including Framer sites.
+This guide explains how to embed the Calorie Calculator Widget on various platforms including WordPress, Framer, and standard HTML websites.
 
-## Quick Start
+## Available Embedding Methods
 
-Add the following HTML to your website where you want the widget to appear:
+The Calorie Calculator Widget offers three embedding options:
+
+1. **Standard Embed**: The most versatile method, providing full customization and configuration options
+2. **One-Line Embed**: The simplest method, using just a single script tag with data attributes
+3. **iframe Embed**: A completely isolated embed, perfect for platforms with strict Content Security Policies
+
+## Embedding on WordPress
+
+### Using the Standard Embed
+
+1. Go to your WordPress dashboard
+2. Navigate to the page or post where you want to add the widget
+3. Switch to the "Text" or "HTML" editor view
+4. Paste your embed code (generated from the dashboard)
+5. Save/update your page or post
+
+### Using a WordPress Plugin
+
+For the most seamless WordPress integration, you can use a shortcode:
+
+1. Install the "Custom HTML Widget" plugin if not already active
+2. Go to Appearance > Widgets
+3. Add a "Custom HTML" widget to your desired widget area
+4. Paste your embed code into the widget
+5. Save the widget
+
+### Adding to WordPress Block Editor (Gutenberg)
+
+1. In the Block Editor, add a new "Custom HTML" block
+2. Paste your embed code into the block
+3. Save your page or post
+
+## Embedding on Framer
+
+### Using the iframe Embed (Recommended for Framer)
+
+1. In Framer, add a new "HTML Embed" component to your design
+2. Paste the iframe embed code generated from the dashboard
+3. Adjust the size as needed in your Framer design
+
+### Using the JavaScript Embed
+
+1. In Framer, add a new "HTML Embed" component
+2. Paste the Standard embed code
+3. Publish your Framer project
+
+## Embedding on Custom HTML Websites
+
+### Standard HTML Site
+
+Simply paste any of the three embed code types into your HTML where you want the widget to appear. The Standard embed is recommended for maximum control.
 
 ```html
-<!-- 1. Create a container for the widget -->
+<!-- Paste your embed code here -->
 <div id="calorie-calculator"></div>
-
-<!-- 2. Load the widget script -->
 <script src="https://your-domain.com/calorie-widget.js"></script>
-
-<!-- 3. Initialize the widget -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     if (typeof CalorieWidget !== 'undefined') {
-      CalorieWidget.init('calorie-calculator');
+      CalorieWidget.init('calorie-calculator', {
+        // Your configuration options here
+      });
     }
   });
 </script>
 ```
 
-## One-Line Embed (Recommended for Framer)
+### React Applications
 
-For the simplest possible integration, use this single line of code:
+If you're integrating with a React application, you can:
 
-```html
-<script src="https://your-domain.com/calorie-widget.js" data-container="calorie-calculator"></script>
-```
-
-This will:
-1. Create a container div with ID "calorie-calculator"
-2. Load the widget script
-3. Automatically initialize the widget
-
-## Customization Options
-
-Customize the widget's appearance and content by passing options to the `init` function:
-
-```html
-<div id="calorie-calculator"></div>
-<script src="https://your-domain.com/calorie-widget.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    CalorieWidget.init('calorie-calculator', {
-      // Color scheme
-      primaryColor: '#4361EE',   // Header and button color
-      secondaryColor: '#3A0CA3', // Secondary button color
-      
-      // Text content
-      title: 'Calorie Calculator',
-      subtitle: 'Calculate your daily calorie needs',
-      footerText: 'Results based on Mifflin-St Jeor Equation',
-      
-      // Layout
-      maxWidth: '600px',
-      
-      // Lead generation (enabled by default)
-      requireLeadCapture: true,  // Require name/email to view results
-      
-      // Custom lead capture handler
-      onLeadCapture: function(leadData) {
-        // Handle the lead data (name, email)
-        console.log('Lead captured:', leadData);
-        
-        // You can send this data to your CRM or email service
-        // Example: sendToMailchimp(leadData);
-      }
-    });
-  });
-</script>
-```
-
-## Lead Generation Feature
-
-The widget includes a built-in lead generation feature that blurs the results until users provide their name and email address:
-
-### Enabling/Disabling Lead Capture
-
-```html
-<!-- Enable lead capture (default) -->
-<script src="https://your-domain.com/calorie-widget.js" 
-  data-container="calorie-calculator"
-  data-require-lead-capture="true">
-</script>
-
-<!-- Disable lead capture -->
-<script src="https://your-domain.com/calorie-widget.js" 
-  data-container="calorie-calculator"
-  data-require-lead-capture="false">
-</script>
-```
-
-### Customizing the Lead Form
-
-You can customize the lead form texts through these options:
-
-```html
-<script>
-  CalorieWidget.init('calorie-calculator', {
-    leadFormTitle: 'Get Your Custom Results', 
-    leadFormDescription: 'Enter your details to see your personalized calorie plan',
-    leadFormButtonText: 'Show My Results',
-    leadFormPrivacyText: 'We value your privacy and will never spam you'
-  });
-</script>
-```
-
-### Handling Captured Leads
-
-There are two ways to access the captured leads:
-
-1. **Custom Handler Function**: Provide an `onLeadCapture` callback function
-   ```javascript
-   CalorieWidget.init('calorie-calculator', {
-     onLeadCapture: function(leadData) {
-       // Send to your CRM or email service
-       sendToMailchimp({
-         email: leadData.email,
-         firstName: leadData.name,
-         tags: ['calorie-calculator']
-       });
-     }
-   });
+1. Include the script in your HTML template:
+   ```html
+   <script src="https://your-domain.com/calorie-widget.js"></script>
    ```
 
-2. **Accessing Stored Leads**: The widget stores leads in localStorage for demo purposes
-   ```javascript
-   // Get the widget instance
-   const widget = CalorieWidget.init('calorie-calculator');
-   
-   // Later, retrieve the leads
-   const leads = widget.getLeads();
-   console.log(leads); // Array of captured leads with timestamps
+2. Add a container div with an ID:
+   ```jsx
+   function YourComponent() {
+     useEffect(() => {
+       if (window.CalorieWidget) {
+         window.CalorieWidget.init('calorie-calculator', {
+           // Your configuration options
+         });
+       }
+     }, []);
+     
+     return <div id="calorie-calculator"></div>;
+   }
    ```
 
-## For Framer Sites
+## Widget Customization Options
 
-When embedding on Framer sites:
+All embedding methods support the following customization options:
 
-1. In Framer, add an HTML Embed component to your page
-2. Paste the one-line embed code into the HTML field:
+| Option | Description | Default Value |
+|--------|-------------|---------------|
+| `primaryColor` | Primary theme color | `#4361EE` |
+| `secondaryColor` | Secondary theme color | `#3A0CA3` |
+| `title` | Widget title | `Calorie Calculator` |
+| `subtitle` | Widget subtitle | `Calculate your daily calorie needs` |
+| `footerText` | Footer text | `Results based on Mifflin-St Jeor Equation` |
+| `maxWidth` | Maximum width in pixels | `600` |
+| `requireLeadCapture` | Enable lead capture form | `true` |
+| `imperialUnits` | Use imperial units (inches/lbs) | `true` |
+| `calculationFormula` | Formula to use (`mifflin` or `harris`) | `mifflin` |
+| `logoUrl` | URL to your logo image | - |
 
-```html
-<script src="https://your-domain.com/calorie-widget.js" 
-  data-container="calorie-calculator"
-  data-primary-color="#9b59b6"
-  data-secondary-color="#8e44ad"
-  data-title="Fitness Calorie Calculator">
-</script>
-```
+## Troubleshooting
 
-## Advanced Usage: Data Attribute Customization
+### Widget Not Displaying
 
-You can customize the widget using data attributes:
+- Ensure the script URL is correct and accessible
+- Check that the container ID matches in both the div and initialization code
+- Verify there are no JavaScript errors in your browser console
 
-```html
-<script 
-  src="https://your-domain.com/calorie-widget.js" 
-  data-container="calorie-calculator"
-  data-primary-color="#2ecc71"
-  data-secondary-color="#27ae60"
-  data-title="Eco Calorie Calculator"
-  data-subtitle="Calculate your daily energy needs"
-  data-footer-text="Powered by green energy and science"
-  data-require-lead-capture="true"
-></script>
-```
+### Lead Capture Not Working
 
-## API Reference
+- Confirm that `requireLeadCapture` is set to `true`
+- Check your browser console for any errors when submitting the form
+- Verify your integration settings if using an email service
 
-The CalorieWidget object provides the following methods:
+### Styling Issues
 
-### `CalorieWidget.init(containerId, options)`
+- If the widget style conflicts with your site, try using the iframe embed
+- Custom CSS can be added to your site to override widget styles
+- Adjust the `maxWidth` parameter to better fit your layout
 
-Initializes the widget in the specified container.
+## Need Help?
 
-- `containerId`: String ID of the container element
-- `options`: Object containing customization options
-
-Returns an object with the following methods:
-- `update(newOptions)`: Update the widget with new options
-- `unmount()`: Remove the widget from the DOM
-- `getLeads()`: Get all leads captured by this widget instance
-
-### Customization Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `primaryColor` | String | `#4361EE` | Main color for header and buttons |
-| `secondaryColor` | String | `#3A0CA3` | Secondary color for hover states |
-| `title` | String | `Calorie Calculator` | Widget title |
-| `subtitle` | String | `Calculate your daily calorie needs` | Widget subtitle |
-| `footerText` | String | `Results based on Mifflin-St Jeor Equation` | Footer text |
-| `maxWidth` | String | `600px` | Maximum width of the widget |
-| `requireLeadCapture` | Boolean | `true` | Require name/email to view results |
-| `onLeadCapture` | Function | `null` | Callback function when a lead is captured |
-| `leadFormTitle` | String | `Your Results Are Ready!` | Lead form title |
-| `leadFormDescription` | String | `Enter your name and email...` | Lead form description |
-| `leadFormButtonText` | String | `Unlock My Results` | Lead form button text |
-| `leadFormPrivacyText` | String | `We respect your privacy...` | Lead form privacy text |
-
-## Examples
-
-### Basic Embedding
-
-```html
-<div id="calorie-calculator"></div>
-<script src="https://your-domain.com/calorie-widget.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    CalorieWidget.init('calorie-calculator');
-  });
-</script>
-```
-
-### Lead Generation Enabled
-
-```html
-<div id="lead-gen-widget"></div>
-<script src="https://your-domain.com/calorie-widget.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    CalorieWidget.init('lead-gen-widget', {
-      primaryColor: '#3B82F6',
-      secondaryColor: '#1D4ED8',
-      title: 'Premium Calorie Calculator',
-      requireLeadCapture: true,
-      onLeadCapture: function(data) {
-        // Send lead data to your server
-        fetch('https://your-api.com/leads', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-      }
-    });
-  });
-</script>
-```
-
-### No Lead Capture
-
-```html
-<div id="no-lead-widget"></div>
-<script src="https://your-domain.com/calorie-widget.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    CalorieWidget.init('no-lead-widget', {
-      primaryColor: '#10B981',
-      secondaryColor: '#059669',
-      title: 'Free Calorie Calculator',
-      requireLeadCapture: false
-    });
-  });
-</script>
-```
+For additional assistance or custom integration help, please contact our support team.

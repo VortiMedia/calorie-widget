@@ -35,6 +35,11 @@ module.exports = {
       template: './src/index.html',
       filename: 'index.html',
     }),
+    new HtmlWebpackPlugin({
+      template: './src/widget-preview.html',
+      filename: 'widget-preview.html',
+      inject: false,
+    }),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -45,5 +50,10 @@ module.exports = {
     },
     port: 3000,
     open: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /^\/widget-preview/, to: '/widget-preview.html' }
+      ]
+    }
   },
 };

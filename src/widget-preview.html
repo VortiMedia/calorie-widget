@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Widget Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #calorie-calculator-container {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="calorie-calculator-container"></div>
+    
+    <script src="/calorie-widget.js"></script>
+    <script>
+        // Parse URL parameters for widget configuration
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.slice(1);
+            const pairs = queryString.split('&');
+            
+            for (let i = 0; i < pairs.length; i++) {
+                const pair = pairs[i].split('=');
+                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+            }
+            
+            return params;
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = getQueryParams();
+            
+            // Configure widget based on URL parameters
+            if (typeof CalorieWidget !== 'undefined') {
+                const config = {
+                    // Colors
+                    primaryColor: params.primaryColor || '#4361EE',
+                    secondaryColor: params.secondaryColor || '#3A0CA3',
+                    
+                    // Branding
+                    title: params.title || 'Calorie Calculator',
+                    subtitle: params.subtitle || 'Calculate your daily calorie needs',
+                    footerText: params.footerText || 'Results based on Mifflin-St Jeor Equation',
+                    maxWidth: params.maxWidth + 'px' || '600px',
+                    
+                    // Lead capture
+                    requireLeadCapture: params.requireLeadCapture === 'true',
+                    leadFormTitle: params.leadFormTitle || 'Get Your Custom Fitness Plan!',
+                    leadFormDescription: params.leadFormDescription || 'Enter your details to receive your personalized nutrition and workout plan.',
+                    leadFormButton: params.leadFormButton || 'Unlock My Results',
+                    leadFormPrivacy: params.leadFormPrivacy || 'We respect your privacy and will never share your information.',
+                    
+                    // Calculation settings
+                    imperialUnits: params.imperialUnits === 'true',
+                    calculationFormula: params.calculationFormula || 'mifflin',
+                };
+                
+                // Add logo if provided
+                if (params.logo) {
+                    config.logoUrl = params.logo;
+                }
+                
+                // Initialize widget with parsed config
+                CalorieWidget.init('calorie-calculator-container', config);
+            }
+        });
+    </script>
+</body>
+</html>

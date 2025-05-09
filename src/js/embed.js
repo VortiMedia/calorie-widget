@@ -3,96 +3,73 @@
  * This script allows the calorie calculator to be embedded on any website
  */
 (function() {
-    // Configuration
-    const config = {
-        scriptID: 'calorie-calculator-script',
-        containerId: 'calorie-calculator-container',
-        cssPath: 'https://your-domain.com/path/to/styles.css',
-        htmlPath: 'https://your-domain.com/path/to/widget-template.html',
-        jsPath: {
-            calculator: 'https://your-domain.com/path/to/calculator.js',
-            ui: 'https://your-domain.com/path/to/ui.js'
-        }
-    };
+    // Get the current script element
+    const currentScript = document.currentScript;
     
-    /**
-     * Create and load a CSS file
-     * @param {string} path - Path to the CSS file
-     * @returns {Element} The created link element
-     */
-    function loadCSS(path) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = path;
-        document.head.appendChild(link);
-        return link;
+    // Extract data attributes from script tag for one-line embedding
+    function getDataAttributes() {
+        if (!currentScript) return {};
+        
+        const dataAttributes = {};
+        for (const attr of currentScript.attributes) {
+            if (attr.name.startsWith('data-')) {
+                // Convert kebab-case to camelCase for attribute names
+                const key = attr.name.slice(5).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+                dataAttributes[key] = attr.value;
+            }
+        }
+        
+        return dataAttributes;
     }
     
     /**
-     * Load an external JavaScript file
-     * @param {string} path - Path to the JavaScript file
-     * @returns {Promise} Promise that resolves when the script is loaded
+     * Initialize the widget with configuration
+     * @param {string} containerId - ID of the container element
+     * @param {Object} options - Configuration options
      */
-    function loadScript(path) {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = path;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.body.appendChild(script);
+    function initWidget(containerId, options = {}) {
+        // The container where we'll render the widget
+        const container = document.getElementById(containerId);
+        if (!container) {
+            console.error(`Container element with ID '${containerId}' not found.`);
+            return;
+        }
+        
+        // If React and ReactDOM are not loaded, then load them
+        const loadDependencies = Promise.resolve();
+        
+        loadDependencies.then(() => {
+            // Initialize your React widget with the config
+            if (window.CalorieWidget && window.CalorieWidget.init) {
+                window.CalorieWidget.init(containerId, options);
+                console.log('Calorie Calculator Widget initialized successfully.');
+            } else {
+                console.error('Calorie Widget could not be initialized. Make sure the script is loaded correctly.');
+            }
+        }).catch(error => {
+            console.error('Error initializing Calorie Calculator Widget:', error);
         });
     }
     
-    /**
-     * Fetch HTML template and inject it into container
-     * @param {string} path - Path to the HTML template
-     * @param {string} containerId - ID of the container to inject into
-     * @returns {Promise} Promise that resolves when the HTML is loaded
-     */
-    function loadHTML(path, containerId) {
-        return fetch(path)
-            .then(response => response.text())
-            .then(html => {
-                const container = document.getElementById(containerId);
-                if (container) {
-                    container.innerHTML = html;
-                } else {
-                    console.error(`Container with ID '${containerId}' not found.`);
-                }
-            });
-    }
+    // Create API for manual initialization
+    window.CalorieWidgetAPI = {
+        init: initWidget
+    };
     
-    /**
-     * Initialize the widget
-     */
-    function init() {
-        // Create container if it doesn't exist
-        if (!document.getElementById(config.containerId)) {
-            const container = document.createElement('div');
-            container.id = config.containerId;
-            document.currentScript.parentNode.insertBefore(container, document.currentScript);
+    // Auto-initialize if data-container attribute is provided
+    const dataAttrs = getDataAttributes();
+    if (dataAttrs.container) {
+        // Create container if it doesn't exist yet
+        let container = document.getElementById(dataAttrs.container);
+        if (!container) {
+            container = document.createElement('div');
+            container.id = dataAttrs.container;
+            currentScript.parentNode.insertBefore(container, currentScript.nextSibling);
         }
         
-        // Load CSS
-        loadCSS(config.cssPath);
-        
-        // Load HTML template
-        loadHTML(config.htmlPath, config.containerId)
-            .then(() => {
-                // Load JavaScript files
-                return Promise.all([
-                    loadScript(config.jsPath.calculator),
-                    loadScript(config.jsPath.ui)
-                ]);
-            })
-            .then(() => {
-                console.log('Calorie Calculator Widget loaded successfully.');
-            })
-            .catch(error => {
-                console.error('Error loading Calorie Calculator Widget:', error);
-            });
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initWidget(dataAttrs.container, dataAttrs);
+        });
     }
-    
-    // Initialize the widget
-    init();
 })();

@@ -1,62 +1,84 @@
 # Calorie Calculator Widget
 
-A modern, customizable calorie calculator widget that can be embedded on any website, including Framer sites.
-
-![Calorie Calculator Widget](https://placehold.co/600x400/4361EE/white?text=Calorie+Calculator+Widget)
+An embeddable calorie calculator widget for gyms, fitness websites, and nutrition professionals. This widget helps visitors calculate their daily calorie needs and can capture leads for your business.
 
 ## Features
 
-- **Modern UI**: Clean, responsive design with customizable themes
-- **Easy Embedding**: Simple script tag integration for any website
-- **Customizable**: Change colors, text, and layout to match your brand
-- **Lead Generation**: Capture emails with a built-in lead form
-- **Multiple Calculation Features**: BMR, TDEE, weight loss/gain targets
-- **Metric & Imperial**: Support for both measurement systems
-- **Print Support**: Users can print their results
+- 🧮 Calculates BMR, TDEE, and calorie targets using Mifflin-St Jeor or Harris-Benedict formulas
+- 📱 Responsive design that works on desktop and mobile
+- 🎨 Fully customizable colors, text, and branding
+- 📋 Optional lead capture form to grow your email list
+- 📊 Integration with email marketing services (Mailchimp, ConvertKit, etc.)
+- 🔌 Easy embedding on any website, WordPress, or Framer
 
-## Getting Started
+## Demo
 
-### Installation
+View the live demo: [Calorie Calculator Widget Demo](https://your-demo-url.com)
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/calorie-widget.git
-cd calorie-widget
-```
+![Widget Preview](preview.png)
 
+## Quick Start
+
+1. Clone this repository
 2. Install dependencies:
-```bash
-npm install
-```
+   ```
+   npm install
+   ```
+3. Start the development server with hot reloading:
+   ```
+   npm run dev
+   ```
+   This will open the widget in your browser at http://localhost:3000
 
-3. Start the development server:
-```bash
-npm start
-```
+4. Access the dashboard:
+   ```
+   http://localhost:3000/dashboard
+   ```
+   This is where you can customize the widget and get embed codes
 
-4. Build for production:
-```bash
-npm run build
-```
+5. Build the production version:
+   ```
+   npm run build
+   ```
+   This will create the dist folder with all files needed for deployment
 
-### Deployment
+6. Deploy to Vercel:
+   ```
+   npm run deploy
+   ```
+   This will deploy the app to Vercel for hosting
 
-The widget can be deployed to Vercel with a single command:
+## Customization Dashboard
 
-```bash
-npm run deploy
-```
+The widget includes a dashboard where you can:
 
-## Usage
+- Customize colors, text, and branding
+- Configure lead capture settings
+- Connect to email marketing services
+- Generate embed codes for your website
+- View and export captured leads
 
-### Basic Embedding
+Access the dashboard at: `/dashboard`
+
+## Embedding Options
+
+The widget can be embedded in several ways:
+
+### Standard Embed
 
 ```html
 <div id="calorie-calculator"></div>
 <script src="https://your-domain.com/calorie-widget.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    CalorieWidget.init('calorie-calculator');
+    if (typeof CalorieWidget !== 'undefined') {
+      CalorieWidget.init('calorie-calculator', {
+        primaryColor: '#4361EE',
+        secondaryColor: '#3A0CA3',
+        title: 'Calorie Calculator',
+        // More options...
+      });
+    }
   });
 </script>
 ```
@@ -64,81 +86,39 @@ npm run deploy
 ### One-Line Embed
 
 ```html
-<script src="https://your-domain.com/calorie-widget.js" data-container="calorie-calculator"></script>
-```
-
-### Customization
-
-```html
-<div id="calorie-calculator"></div>
-<script src="https://your-domain.com/calorie-widget.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    CalorieWidget.init('calorie-calculator', {
-      primaryColor: '#2ecc71',
-      secondaryColor: '#27ae60',
-      title: 'Eco Calorie Calculator',
-      subtitle: 'Calculate your daily energy needs',
-      footerText: 'Powered by green energy and science'
-    });
-  });
+<script 
+  src="https://your-domain.com/calorie-widget.js" 
+  data-container="calorie-calculator" 
+  data-primary-color="#4361EE" 
+  data-title="Calorie Calculator">
 </script>
 ```
 
-### Lead Generation Feature
-
-The widget includes a built-in lead generation feature that blurs the results until users provide their name and email address:
+### iframe Embed
 
 ```html
-<div id="lead-gen-widget"></div>
-<script src="https://your-domain.com/calorie-widget.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const widget = CalorieWidget.init('lead-gen-widget', {
-      // Enable lead capture (enabled by default)
-      requireLeadCapture: true,
-      
-      // Custom lead form handler
-      onLeadCapture: function(leadData) {
-        // Send the lead data to your CRM or email service
-        sendToMailchimp(leadData);
-      }
-    });
-    
-    // Later, you can retrieve captured leads
-    const leads = widget.getLeads();
-    console.log(leads);
-  });
-</script>
+<iframe 
+  src="https://your-domain.com/widget-preview?primaryColor=%234361EE" 
+  width="600" 
+  height="620" 
+  style="border: none; width: 100%; max-width: 600px;" 
+  title="Calorie Calculator" 
+  loading="lazy">
+</iframe>
 ```
 
-Disable lead capture if not needed:
-
-```html
-<script src="https://your-domain.com/calorie-widget.js" 
-  data-container="calorie-calculator"
-  data-require-lead-capture="false">
-</script>
-```
+For detailed embedding instructions, see [Widget Embedding Guide](ai-docs/widget-embedding.md).
 
 ## Documentation
 
-For detailed documentation on embedding and customization options, see:
-
-- [Widget Embedding Guide](./ai-docs/widget-embedding.md)
-- [Calorie Formulas Documentation](./ai-docs/calorie-formulas.md)
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## License
-
-ISC
+- [Calorie Calculation Formulas](ai-docs/calorie-formulas.md)
+- [Widget Embedding Guide](ai-docs/widget-embedding.md)
+- [Widget Specification](specs/calorie-calculator-widget-specification.md)
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+[ISC License](LICENSE)
